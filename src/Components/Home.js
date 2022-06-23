@@ -124,6 +124,11 @@ const Home = (props) => {
               </Container>
             </div>
           </Box>
+          <Box>
+            <Button onClick={(e) => props.getCovalentData()}>
+              Get Covalent Info
+            </Button>
+          </Box>
           <FAQ></FAQ>
           <Footer />
         </Box>

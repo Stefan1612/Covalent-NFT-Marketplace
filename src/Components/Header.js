@@ -282,6 +282,15 @@ export default function PrimarySearchAppBar(props) {
                                 Owned Nft list
                               </MenuItem>
                             </Link>
+                            <Link
+                              to="/TransferHistory"
+                              className="Nav"
+                              style={{ textDecoration: "none", color: "white" }}
+                            >
+                              <MenuItem onClick={handleClose}>
+                                Check Transfer History with Covalent
+                              </MenuItem>
+                            </Link>
                             <MenuItem onClick={handleClose}>Logout</MenuItem>
                           </MenuList>
                         </ClickAwayListener>

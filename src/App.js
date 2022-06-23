@@ -10,6 +10,7 @@ import MintedTokens from "./Components/MintedTokens";
 import MintForm from "./Components/MintForm";
 import OwnNfts from "./Components/OwnNfts";
 import Header from "./Components/Header";
+import Transfers from "./Components/Transfers";
 //abi's
 
 import NFT from "./config/contracts/NFT.json";
@@ -28,7 +29,7 @@ import theme from "./Components/theme/theme";
 function App() {
   //contract addresses
   /*  const nftmarketaddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-  const ContractAddress[4].NftMarketPlace = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"; */
+  const ContractAddress[42].NftMarketPlace = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"; */
 
   //handle State
   const [account, setAccount] = useState("");
@@ -47,37 +48,37 @@ function App() {
 
   // infuraProvider
 
-  const infuraProvider = new ethers.providers.InfuraProvider("rinkeby", {
+  const infuraProvider = new ethers.providers.InfuraProvider("kovan", {
     projectId: process.env.REACT_APP_PROJECT_ID,
     projectSecret: process.env.REACT_APP_PROJECT_SECRET,
   });
 
   //market
   const eventContractMarket = new ethers.Contract(
-    ContractAddress[4].NftMarketPlace,
+    ContractAddress[42].NftMarketPlace,
     NftMarketPlace.abi,
     provider
   );
   //nft
   const eventContractNFT = new ethers.Contract(
-    ContractAddress[4].NFT,
+    ContractAddress[42].NFT,
     NFT.abi,
     provider
   );
   const eventContractMarketInfura = new ethers.Contract(
-    ContractAddress[4].NftMarketPlace,
+    ContractAddress[42].NftMarketPlace,
     NftMarketPlace.abi,
     infuraProvider
   );
   const eventContractNFTInfura = new ethers.Contract(
-    ContractAddress[4].NFT,
+    ContractAddress[42].NFT,
     NFT.abi,
     infuraProvider
   );
   //signer calls
   //market
   const signerContractMarket = new ethers.Contract(
-    ContractAddress[4].NftMarketPlace,
+    ContractAddress[42].NftMarketPlace,
     NftMarketPlace.abi,
     signer
   );
@@ -293,7 +294,7 @@ function App() {
     price = ethers.utils.parseEther(price);
     let tx = await signerContractMarket.buyMarketToken(
       id,
-      ContractAddress[4].NFT,
+      ContractAddress[42].NFT,
       {
         value: price,
       }
@@ -306,25 +307,25 @@ function App() {
   async function sellNFT(marketItem) {
     const signer = provider.getSigner();
     let contract = new ethers.Contract(
-      ContractAddress[4].NftMarketPlace,
+      ContractAddress[42].NftMarketPlace,
       NftMarketPlace.abi,
       signer
     );
     const nftContract = new ethers.Contract(
-      ContractAddress[4].NFT,
+      ContractAddress[42].NFT,
       NFT.abi,
       signer
     );
     let id = marketItem.tokenId;
     id = id.toNumber();
     await nftContract.setApprovalForAll(
-      ContractAddress[4].NftMarketPlace,
+      ContractAddress[42].NftMarketPlace,
       true
     );
     let tx = await contract.saleMarketToken(
       id,
       previewPriceTwo,
-      ContractAddress[4].NFT
+      ContractAddress[42].NFT
     );
     await tx.wait();
     loadOwnNFTs();
@@ -397,11 +398,15 @@ function App() {
     }
   }
 
-  //creating the NFT(first mint at ContractAddress[4].NftMarketPlace, second create market Token at market address)
+  //creating the NFT(first mint at ContractAddress[42].NftMarketPlace, second create market Token at market address)
   async function mintNFT(url) {
     //first step
     const signer = provider.getSigner();
-    let contract = new ethers.Contract(ContractAddress[4].NFT, NFT.abi, signer);
+    let contract = new ethers.Contract(
+      ContractAddress[42].NFT,
+      NFT.abi,
+      signer
+    );
     // let tx =
     await contract.createNFT(url);
 
@@ -421,7 +426,7 @@ function App() {
         console.log(listingPrice)*/
 
     let transaction = await signerContractMarket.mintMarketToken(
-      ContractAddress[4].NFT,
+      ContractAddress[42].NFT,
       {
         value: listingPrice,
       }
@@ -429,11 +434,21 @@ function App() {
     await transaction.wait();
   }
 
+  async function getCovalentData() {
+    const url = new URL(
+      `https://api.covalenthq.com/v1/42/address/${account}/transfers_v2/?contract-address=${ContractAddress[42].NFT}&key=ckey_e0658fffc54e4624b0d7842fed3`
+      /* `https://api.covalenthq.com/v1/42/address/${account}/transfers_v2?contract-address=${ContractAddress[42].NFT}&key=${process.env.REACT_APP_COVALENT_API_KEY}` */
+    );
+    /*/?quote-currency=USD&format=JSON&nft=true&no-nft-fetch=false*/
+    const result = await axios.get(url);
+    console.log(result);
+  }
+
   /*  
   async function deletingNFT(marketItem) {
     const signer = provider.getSigner();
     let contract = new ethers.Contract(
-      ContractAddress[4].NftMarketPlace,
+      ContractAddress[42].NftMarketPlace,
       NFT.abi,
       signer
     );
@@ -443,7 +458,7 @@ function App() {
     await contract.burn(id);
 
     contract = new ethers.Contract(
-      ContractAddress[4].NFT,
+      ContractAddress[42].NFT,
       NftMarketPlace.abi,
       signer
     );
@@ -491,6 +506,7 @@ function App() {
                 onSaleNFTs={onSaleNFTs}
                 buyNFT={buyNFT}
                 FirstLoadGettingAccount={FirstLoadGettingAccount}
+                getCovalentData={getCovalentData}
               />
             }
           />
@@ -525,6 +541,11 @@ function App() {
             exact
             path="/MintedTokens"
             element={<MintedTokens mintedNFTs={mintedNFTs} />}
+          />
+          <Route
+            exact
+            path="/TransferHistory"
+            element={<Transfers account={account} />}
           />
         </Routes>
       </Box>
