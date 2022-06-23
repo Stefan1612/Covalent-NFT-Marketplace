@@ -433,15 +433,20 @@ function App() {
     );
     await transaction.wait();
   }
-
+  const [transferHistory, setTransferHistory] = useState("");
   async function getCovalentData() {
     const url = new URL(
-      `https://api.covalenthq.com/v1/42/address/${account}/transfers_v2/?contract-address=${ContractAddress[42].NFT}&key=ckey_e0658fffc54e4624b0d7842fed3`
+      `https://api.covalenthq.com/v1/42/address/${account}/transfers_v2/?contract-address=${ContractAddress[42].NFT}&key=${process.env.REACT_APP_COVALENT_API_KEY}`
       /* `https://api.covalenthq.com/v1/42/address/${account}/transfers_v2?contract-address=${ContractAddress[42].NFT}&key=${process.env.REACT_APP_COVALENT_API_KEY}` */
     );
     /*/?quote-currency=USD&format=JSON&nft=true&no-nft-fetch=false*/
-    const result = await axios.get(url);
-    console.log(result);
+    await setTransferHistory(await axios.get(url));
+    /* let length = transferHistory.data.data.items.length;
+    for (let i = 0; i < length; i++) {
+      console.log(transferHistory.data.data.items[i].from_address);
+    }
+    console.log(length); */
+    console.log(transferHistory);
   }
 
   /*  
@@ -545,7 +550,13 @@ function App() {
           <Route
             exact
             path="/TransferHistory"
-            element={<Transfers account={account} />}
+            element={
+              <Transfers
+                account={account}
+                getCovalentData={getCovalentData}
+                transferHistory={transferHistory}
+              />
+            }
           />
         </Routes>
       </Box>
