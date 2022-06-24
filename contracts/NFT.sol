@@ -28,11 +28,14 @@ contract NFT is ERC721URIStorage {
     /// @notice keeping track of tokenIds
     Counters.Counter private s_tokenIds;
 
+     /// @notice useless test Constant
+    uint private constant TEST = 12;
+
     /// @notice address of the marketplace I want the this type of NFT to interact with
     address private immutable i_marketplace;
 
     /// @notice setting name, symbol to fixed values
-    constructor(address _marketplace) ERC721("Ape Family", "APF") {
+    constructor(address _marketplace) ERC721("Ape Family", "APFA") {
         i_marketplace = _marketplace;
     }
 

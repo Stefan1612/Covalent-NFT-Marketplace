@@ -44,6 +44,9 @@ contract NftMarketPlace is ReentrancyGuard{
     /// @notice fee to list a NFT on the marketplace
     uint256 constant public LISTINGPRICE = 0.002 ether;
 
+    /// @notice useless test Constant
+    uint private constant TEST = 12;
+
     /* // In case someone accidentally sends ether directly to this contract
     mapping(address  => uint256) private addressToBalance; */
 

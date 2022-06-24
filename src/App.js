@@ -2,7 +2,7 @@ import "./App.css";
 
 import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import { Box, ThemeProvider } from "@mui/material";
+import { Box, ThemeProvider, Button } from "@mui/material";
 //Components
 
 import Home from "./Components/Home";
@@ -23,13 +23,31 @@ import { create as ipfsHttpClient } from "ipfs-http-client";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import theme from "./Components/theme/theme";
-
+/* const Web3Eth = require("web3-eth"); */
 // const {utils, BigNumber} = require('ethers');
 
 function App() {
   //contract addresses
   /*  const nftmarketaddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const ContractAddress[42].NftMarketPlace = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"; */
+  /* const web3Eth = new Web3Eth(Web3Eth.givenProvider);
+  const contractWeb3 = new web3Eth.Contract(NFT.abi, ContractAddress[42].NFT);
+  function web3Call() {
+    web3Eth.getPastEvents(
+      "Transfer",
+      {
+        fromBlock: 0,
+        toBlock: "latest",
+      },
+      function (error, events) {
+        if (!error) {
+          for (var i = 0; i < events.length; i++) {
+            console.log(events[i].returnValues.tokenId);
+          }
+        }
+      }
+    );
+  } */
 
   //handle State
   const [account, setAccount] = useState("");
@@ -435,17 +453,14 @@ function App() {
   }
   const [transferHistory, setTransferHistory] = useState("");
   async function getCovalentData() {
-    const url = new URL(
-      `https://api.covalenthq.com/v1/42/address/${account}/transfers_v2/?contract-address=${ContractAddress[42].NFT}&key=${process.env.REACT_APP_COVALENT_API_KEY}`
-      /* `https://api.covalenthq.com/v1/42/address/${account}/transfers_v2?contract-address=${ContractAddress[42].NFT}&key=${process.env.REACT_APP_COVALENT_API_KEY}` */
-    );
-    /*/?quote-currency=USD&format=JSON&nft=true&no-nft-fetch=false*/
+    const url =
+      /* new URL( */
+      `https://api.covalenthq.com/v1/42/address/${account}/transfers_v2/?contract-address=${ContractAddress[42].NFT}&key=${process.env.REACT_APP_COVALENT_API_KEY}`;
+
+    /*   ); */
+
     await setTransferHistory(await axios.get(url));
-    /* let length = transferHistory.data.data.items.length;
-    for (let i = 0; i < length; i++) {
-      console.log(transferHistory.data.data.items[i].from_address);
-    }
-    console.log(length); */
+
     console.log(transferHistory);
   }
 
@@ -555,10 +570,12 @@ function App() {
                 account={account}
                 getCovalentData={getCovalentData}
                 transferHistory={transferHistory}
+                infuraProvider={infuraProvider}
               />
             }
           />
         </Routes>
+        {/*      <Button onClick={(e) => web3Call()}>Web3</Button> */}
       </Box>
       {/*    </Box> */}
     </ThemeProvider>
