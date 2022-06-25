@@ -2,7 +2,7 @@ import "./App.css";
 
 import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import { Box, ThemeProvider, Button } from "@mui/material";
+import { Box, ThemeProvider } from "@mui/material";
 //Components
 
 import Home from "./Components/Home";
