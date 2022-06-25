@@ -37,6 +37,7 @@ const Transfers = ({
     if (transferHistory) {
       setTransferArray(transferHistory.data.data.items);
       console.log("transfer Array updated to equal transferHistory");
+      getData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transferHistory]);
@@ -114,14 +115,14 @@ const Transfers = ({
             borderColor: "white",
             border: "solid",
             borderWidth: "1px",
-            marginBottom: "10vh",
+            marginBottom: "2vh",
           }}
         >
           {" "}
           <Box>
             Currently Connected With: {account ? account : "Not Connected"}
           </Box>
-          Current Ethereum Balance:
+          {/*  Current Ethereum Balance: */}
         </Box>{" "}
         <Box
           style={{
@@ -135,11 +136,24 @@ const Transfers = ({
           }}
         >
           {" "}
-          Transfers
+          <Typography variant={"h3"} sx={{ color: "black" }}>
+            Transfers
+          </Typography>
         </Box>
-        <Button onClick={(e) => getCovalentBalance()}>Get balance</Button>
-        <Button onClick={(e) => getCovalentData()}>Get transfer History</Button>
-        <Button onClick={(e) => getData()}>getData</Button>
+        {/* <Button onClick={(e) => getCovalentBalance()}>Get balance</Button> */}
+        <Box
+          sx={{ textAlign: "center", marginTop: "100px", marginBottom: "20px" }}
+        >
+          <Box sx={{ color: "white" }}>
+            <Typography variant={"h5"} component={"p"}>
+              Double Tap
+            </Typography>
+          </Box>
+          <Button onClick={(e) => getCovalentData()} variant="contained">
+            Generate Transaction History
+          </Button>
+        </Box>
+        {/*   <Button onClick={(e) => getData()}>getData</Button> */}
         {/*  <Button onClick={(e) => callTransferData()}>
           console.log transferData
         </Button> */}
