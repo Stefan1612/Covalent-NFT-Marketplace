@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Input, Typography, Container } from "@mui/material";
+import { Box, Button, Typography, Container } from "@mui/material";
 import axios from "axios";
 import { ethers } from "ethers";
 import NFT from "../config/contracts/NFT.json";
@@ -9,21 +9,13 @@ const Transfers = ({
 
   infuraProvider,
 }) => {
-  async function getCovalentBalance() {
+  /* async function getCovalentBalance() {
     const url = new URL(
       `https://api.covalenthq.com/v1/42/address/${account}/balances_v2/?quote-currency=USD&format=JSON&nft=false&no-nft-fetch=false&key=${process.env.REACT_APP_COVALENT_API_KEY}`
-    ); /* https://api.covalenthq.com/v1/1/address/demo.eth/balances_v2/?quote-currency=USD&format=JSON&nft=false&no-nft-fetch=false&key=ckey_e0658fffc54e4624b0d7842fed3 */
+    ); */ /* https://api.covalenthq.com/v1/1/address/demo.eth/balances_v2/?quote-currency=USD&format=JSON&nft=false&no-nft-fetch=false&key=ckey_e0658fffc54e4624b0d7842fed3 */
 
-    const result = await axios.get(url);
-  }
-  /* "NftMarketPlace": "0x412101A022814AB446Ac7A081227e06DfA18E0c2",
-    "NFT": "0xD8FAe8DFd746d4BB7fa944E09F1DAed3a6A74057" */
-
-  /*  "NftMarketPlace": "0xefD7c6C92f3486aCf834A4631e52d8fC6c0C8989",
-    "NFT": "0xC65B9150f030c77D6619Dd807FdF19aDbaF65f40" */
-
-  /*  "NftMarketPlace": "0xCD24f71098dB656856b0164FC3AB639D864De977", 
-   "NFT":  "0x7dC011D1121D7932108f87BF462A587bA9B7F90f"  */
+  /*    const result = await axios.get(url);
+  } */
 
   const [transferHistory, setTransferHistory] = useState("");
   const [transferArray, setTransferArray] = useState([]);
@@ -50,12 +42,13 @@ const Transfers = ({
     }
   }
 
-  const [transferData, setTransferData] = useState([]);
+  /*  const [transferData, setTransferData] = useState([]); */
   const [finishedFinalObject, setFinishedFinalObject] = useState(false);
   const [finalObject, setFinalObject] = useState([]);
+
   async function getData() {
     let memoryArray = [];
-    transferArray.map((e) => {
+    transferArray.forEach((e) => {
       let result = showNftTransactionType(e);
       memoryArray.push({
         Interaction: result,
@@ -69,7 +62,7 @@ const Transfers = ({
         ContractTicker: e.transfers[0].contract_ticker_symbol,
       });
     });
-    setTransferData(memoryArray);
+    /* setTransferData(memoryArray); */
     // saves all transaction objects in order "newest -> oldest"
 
     const contractNFTInfura = new ethers.Contract(
