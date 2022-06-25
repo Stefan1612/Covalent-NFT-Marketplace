@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, Input, Typography, Container } from "@mui/material";
 import axios from "axios";
 import { ethers } from "ethers";
+import NFT from "../config/contracts/NFT.json";
+import ContractAddress from "../config/contracts/map.json";
 const Transfers = ({
   account,
-  getCovalentData,
-  transferHistory,
+
   infuraProvider,
 }) => {
   async function getCovalentBalance() {
     const url = new URL(
       `https://api.covalenthq.com/v1/42/address/${account}/balances_v2/?quote-currency=USD&format=JSON&nft=false&no-nft-fetch=false&key=${process.env.REACT_APP_COVALENT_API_KEY}`
-      /* `https://api.covalenthq.com/v1/42/address/${account}/transfers_v2?contract-address=${ContractAddress[42].NFT}&key=${process.env.REACT_APP_COVALENT_API_KEY}` */
     ); /* https://api.covalenthq.com/v1/1/address/demo.eth/balances_v2/?quote-currency=USD&format=JSON&nft=false&no-nft-fetch=false&key=ckey_e0658fffc54e4624b0d7842fed3 */
 
     const result = await axios.get(url);
@@ -25,6 +25,25 @@ const Transfers = ({
 
   /*  "NftMarketPlace": "0xCD24f71098dB656856b0164FC3AB639D864De977", 
    "NFT":  "0x7dC011D1121D7932108f87BF462A587bA9B7F90f"  */
+
+  const [transferHistory, setTransferHistory] = useState("");
+  const [transferArray, setTransferArray] = useState([]);
+  async function getCovalentData() {
+    const url = `https://api.covalenthq.com/v1/42/address/${account}/transfers_v2/?contract-address=${ContractAddress[42].NFT}&key=${process.env.REACT_APP_COVALENT_API_KEY}`;
+    let result = await axios.get(url);
+    setTransferHistory(result);
+    /*  await setTransferArray(transferHistory.data.data.items); */
+    console.log(transferArray);
+    console.log(transferHistory);
+  }
+  useEffect(() => {
+    if (transferHistory) {
+      setTransferArray(transferHistory.data.data.items);
+      console.log("transfer Array updated to equal transferHistory");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transferHistory]);
+
   function showNftTransactionType(index) {
     if (index.transfers[0].transfer_type === "IN") {
       return "Token Minted";
@@ -33,7 +52,9 @@ const Transfers = ({
       return "Token put up for sale";
     }
   }
-
+  const [tokenIds, setTokenIds] = useState([]);
+  const [image, setImage] = useState([]);
+  const [finished, setFinished] = useState(false);
   async function getReceipt(index) {
     const receipt = await infuraProvider.getTransactionReceipt(index.tx_hash);
     /*  console.log(JSON.stringify(receipt.logs[0].topics[3].toString(16))); */
@@ -42,9 +63,76 @@ const Transfers = ({
     tokenId = tokenId.slice(2);
     tokenId = parseInt(tokenId, 16);
     console.log(tokenId);
+    const contractNFTInfura = new ethers.Contract(
+      ContractAddress[42].NFT,
+      NFT.abi,
+      infuraProvider
+    );
+    let tokenUri = await contractNFTInfura.tokenURI(tokenId);
 
-    return tokenId;
+    const meta = await axios.get(tokenUri);
+    console.log(meta.data.image);
+    /*   setTokenIds([...tokenIds, tokenId]); */
+    console.log(tokenIds);
+    if (index.length === index) {
+      setFinished(true);
+    }
+    /* setImage(meta.data.image); */
+    /* return meta.data.image; */
   }
+  const [transferData, setTransferData] = useState([]);
+  const [finishedFinalObject, setFinishedFinalObject] = useState(false);
+  const [finalObject, setFinalObject] = useState([]);
+  async function getData() {
+    let memoryArray = [];
+    transferArray.map((e) => {
+      memoryArray.push({
+        TransferType: e.transfers[0].transfer_type,
+        From: e.from_address,
+        To: e.to_address,
+        GasSpent: e.gas_spent,
+        GasPrice: e.gas_price,
+        TxHash: e.tx_hash,
+        ContractName: e.transfers[0].contract_name,
+        ContractTicker: e.transfers[0].contract_ticker_symbol,
+      });
+    });
+    setTransferData(memoryArray);
+    // saves all transaction objects in order "newest -> oldest"
+    console.log(memoryArray);
+    const contractNFTInfura = new ethers.Contract(
+      ContractAddress[42].NFT,
+      NFT.abi,
+      infuraProvider
+    );
+
+    await Promise.all(
+      memoryArray.map(async (e, i) => {
+        const receipt = await infuraProvider.getTransactionReceipt(e.TxHash);
+        console.log(receipt);
+        let tokenId = receipt.logs[0].topics[3];
+
+        tokenId = tokenId.slice(2);
+        tokenId = parseInt(tokenId, 16);
+        console.log(tokenId);
+
+        let tokenUri = await contractNFTInfura.tokenURI(tokenId);
+
+        const meta = await axios.get(tokenUri);
+        console.log(meta.data.image);
+        e.image = meta.data.image;
+      })
+    );
+    setFinalObject(memoryArray);
+    setFinishedFinalObject(true);
+
+    console.log(memoryArray);
+  }
+  function callTransferData() {
+    console.log(transferData);
+    console.log(transferData[0].TxHash);
+  }
+
   return (
     <Box
       id="background"
@@ -82,7 +170,42 @@ const Transfers = ({
         </Box>
         <Button onClick={(e) => getCovalentBalance()}>Get balance</Button>
         <Button onClick={(e) => getCovalentData()}>Get transfer History</Button>
-        {transferHistory /* console.log(props.secondAlchemyResult)  */ &&
+        <Button onClick={(e) => getData()}>getData</Button>
+        <Button onClick={(e) => callTransferData()}>
+          console.log transferData
+        </Button>
+        <Box>
+          {finishedFinalObject &&
+            finalObject.map((e, index) => {
+              return (
+                <Box
+                  key={index}
+                  style={{
+                    border: "solid",
+                    margin: "10px",
+                    padding: "10px",
+                    paddingLeft: "30px",
+                    borderWidth: "1px",
+                    textAlign: "left",
+                    color: "white",
+                  }}
+                >
+                  <Box>
+                    <img src={e.image}></img>
+                    <Box>From =&gt; {e.From}</Box>
+                    <Box>To =&gt; {e.To}</Box>
+                    <Box>Gas spent =&gt; {e.GasSpent}</Box>
+                    <Box>Gas price =&gt; {e.GasPrice}</Box>
+                    <Box>Tx Hash =&gt; {e.TxHash}</Box>
+                    <Box>Transfer Type =&gt; {e.TransferType}</Box>
+                    <Box>Contract Name =&gt; {e.ContractName}</Box>
+                    <Box>Contract Ticker =&gt; {e.ContractTicker}</Box>
+                  </Box>
+                </Box>
+              );
+            })}
+        </Box>
+        {/*  {transferHistory  &&
           transferHistory.data.data.items.map((e, index) => {
             return (
               <Box
@@ -102,12 +225,9 @@ const Transfers = ({
                     {showNftTransactionType(
                       transferHistory.data.data.items[index]
                     )}
-                    <Box>
-                      {JSON.stringify(
-                        getReceipt(transferHistory.data.data.items[index])
-                      )}
-                      {/*   {tokenID} */}
-                    </Box>
+                
+                    <Button>get Picture</Button>
+                   
                     <Box>
                       From =&gt;{" "}
                       {transferHistory.data.data.items[index].from_address}
@@ -151,23 +271,9 @@ const Transfers = ({
                     </Box>
                   </Box>
                 )}
-                {/* <Box>
-                From =&gt; {transferHistory.data.data[index].from_address}
-              </Box>
-              <Box>To =&gt; {transferHistory.data.data[index].to_address}</Box>
-              <Box>
-                Gas spent =&gt; {transferHistory.data.data[index].gas_spent}
-              </Box>
-              <Box>
-                Gas price =&gt; {transferHistory.data.data[index].gas_price}
-              </Box> */}
-                {/* <Box>
-                Blocknumber =&gt; {transferHistory.data.data[index].blockNumber}
-              </Box> */}
               </Box>
             );
-          })}
-        <Button onClick={(e) => getReceipt()}>receipt</Button>
+          })} */}
       </Container>
     </Box>
   );
