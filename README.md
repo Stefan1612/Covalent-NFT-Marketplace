@@ -23,7 +23,7 @@ This DApp allows you mint, buy and sell NFT's from the "Ape Family" contract.
 - NFT's uploaded to IPFS
 
 ## Covalent API
-
+Covalent was used to generate: [this](https://github.com/Stefan1612/Covalent-NFT-Marketplace/blob/master/src/Components/Transfers.js)
 ## Stack
 
 ### Blockchain Technologies
