@@ -32,9 +32,6 @@ const Transfers = ({
     const url = `https://api.covalenthq.com/v1/42/address/${account}/transfers_v2/?contract-address=${ContractAddress[42].NFT}&key=${process.env.REACT_APP_COVALENT_API_KEY}`;
     let result = await axios.get(url);
     setTransferHistory(result);
-    /*  await setTransferArray(transferHistory.data.data.items); */
-    console.log(transferArray);
-    console.log(transferHistory);
   }
   useEffect(() => {
     if (transferHistory) {
@@ -52,34 +49,7 @@ const Transfers = ({
       return "Token put up for sale";
     }
   }
-  const [tokenIds, setTokenIds] = useState([]);
-  const [image, setImage] = useState([]);
-  const [finished, setFinished] = useState(false);
-  async function getReceipt(index) {
-    const receipt = await infuraProvider.getTransactionReceipt(index.tx_hash);
-    /*  console.log(JSON.stringify(receipt.logs[0].topics[3].toString(16))); */
-    let tokenId = receipt.logs[0].topics[3];
 
-    tokenId = tokenId.slice(2);
-    tokenId = parseInt(tokenId, 16);
-    console.log(tokenId);
-    const contractNFTInfura = new ethers.Contract(
-      ContractAddress[42].NFT,
-      NFT.abi,
-      infuraProvider
-    );
-    let tokenUri = await contractNFTInfura.tokenURI(tokenId);
-
-    const meta = await axios.get(tokenUri);
-    console.log(meta.data.image);
-    /*   setTokenIds([...tokenIds, tokenId]); */
-    console.log(tokenIds);
-    if (index.length === index) {
-      setFinished(true);
-    }
-    /* setImage(meta.data.image); */
-    /* return meta.data.image; */
-  }
   const [transferData, setTransferData] = useState([]);
   const [finishedFinalObject, setFinishedFinalObject] = useState(false);
   const [finalObject, setFinalObject] = useState([]);
@@ -99,7 +69,7 @@ const Transfers = ({
     });
     setTransferData(memoryArray);
     // saves all transaction objects in order "newest -> oldest"
-    console.log(memoryArray);
+
     const contractNFTInfura = new ethers.Contract(
       ContractAddress[42].NFT,
       NFT.abi,
@@ -109,17 +79,16 @@ const Transfers = ({
     await Promise.all(
       memoryArray.map(async (e, i) => {
         const receipt = await infuraProvider.getTransactionReceipt(e.TxHash);
-        console.log(receipt);
+
         let tokenId = receipt.logs[0].topics[3];
 
         tokenId = tokenId.slice(2);
         tokenId = parseInt(tokenId, 16);
-        console.log(tokenId);
 
         let tokenUri = await contractNFTInfura.tokenURI(tokenId);
 
         const meta = await axios.get(tokenUri);
-        console.log(meta.data.image);
+
         e.image = meta.data.image;
       })
     );
@@ -128,10 +97,10 @@ const Transfers = ({
 
     console.log(memoryArray);
   }
-  function callTransferData() {
+  /* function callTransferData() {
     console.log(transferData);
     console.log(transferData[0].TxHash);
-  }
+  } */
 
   return (
     <Box
@@ -171,9 +140,9 @@ const Transfers = ({
         <Button onClick={(e) => getCovalentBalance()}>Get balance</Button>
         <Button onClick={(e) => getCovalentData()}>Get transfer History</Button>
         <Button onClick={(e) => getData()}>getData</Button>
-        <Button onClick={(e) => callTransferData()}>
+        {/*  <Button onClick={(e) => callTransferData()}>
           console.log transferData
-        </Button>
+        </Button> */}
         <Box>
           {finishedFinalObject &&
             finalObject.map((e, index) => {
@@ -191,89 +160,26 @@ const Transfers = ({
                   }}
                 >
                   <Box>
-                    <img src={e.image}></img>
-                    <Box>From =&gt; {e.From}</Box>
-                    <Box>To =&gt; {e.To}</Box>
-                    <Box>Gas spent =&gt; {e.GasSpent}</Box>
-                    <Box>Gas price =&gt; {e.GasPrice}</Box>
-                    <Box>Tx Hash =&gt; {e.TxHash}</Box>
-                    <Box>Transfer Type =&gt; {e.TransferType}</Box>
-                    <Box>Contract Name =&gt; {e.ContractName}</Box>
-                    <Box>Contract Ticker =&gt; {e.ContractTicker}</Box>
+                    <Box style={{ float: "left", paddingRight: "40px" }}>
+                      <Box>From =&gt; {e.From}</Box>
+                      <Box>To =&gt; {e.To}</Box>
+                      <Box>Gas spent =&gt; {e.GasSpent}</Box>
+                      <Box>Gas price =&gt; {e.GasPrice}</Box>
+                      <Box>Tx Hash =&gt; {e.TxHash}</Box>
+                      <Box>Transfer Type =&gt; {e.TransferType}</Box>
+                      <Box>Contract Name =&gt; {e.ContractName}</Box>
+                      <Box>Contract Ticker =&gt; {e.ContractTicker}</Box>
+                    </Box>
+                    <img
+                      src={e.image}
+                      alt="nft"
+                      style={{ width: "250px" }}
+                    ></img>
                   </Box>
                 </Box>
               );
             })}
         </Box>
-        {/*  {transferHistory  &&
-          transferHistory.data.data.items.map((e, index) => {
-            return (
-              <Box
-                key={index}
-                style={{
-                  border: "solid",
-                  margin: "10px",
-                  padding: "10px",
-                  paddingLeft: "30px",
-                  borderWidth: "1px",
-                  textAlign: "left",
-                  color: "white",
-                }}
-              >
-                {transferHistory.data.data.items[index].from_address && (
-                  <Box>
-                    {showNftTransactionType(
-                      transferHistory.data.data.items[index]
-                    )}
-                
-                    <Button>get Picture</Button>
-                   
-                    <Box>
-                      From =&gt;{" "}
-                      {transferHistory.data.data.items[index].from_address}
-                    </Box>
-                    <Box>
-                      To =&gt;{" "}
-                      {transferHistory.data.data.items[index].to_address}
-                    </Box>
-                    <Box>
-                      Gas spent =&gt;{" "}
-                      {transferHistory.data.data.items[index].gas_spent}
-                    </Box>
-                    <Box>
-                      Gas price =&gt;{" "}
-                      {transferHistory.data.data.items[index].gas_price}
-                    </Box>
-                    <Box>
-                      Tx Hash =&gt;{" "}
-                      {transferHistory.data.data.items[index].tx_hash}
-                    </Box>
-                    <Box>
-                      Transfer Type =&gt;{" "}
-                      {
-                        transferHistory.data.data.items[index].transfers[0]
-                          .transfer_type
-                      }
-                    </Box>
-                    <Box>
-                      Contract Name =&gt;{" "}
-                      {
-                        transferHistory.data.data.items[index].transfers[0]
-                          .contract_name
-                      }
-                    </Box>
-                    <Box>
-                      Contract Ticker =&gt;{" "}
-                      {
-                        transferHistory.data.data.items[index].transfers[0]
-                          .contract_ticker_symbol
-                      }
-                    </Box>
-                  </Box>
-                )}
-              </Box>
-            );
-          })} */}
       </Container>
     </Box>
   );
