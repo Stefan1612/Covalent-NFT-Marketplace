@@ -15,7 +15,6 @@ const Transfers = ({
     ); /* https://api.covalenthq.com/v1/1/address/demo.eth/balances_v2/?quote-currency=USD&format=JSON&nft=false&no-nft-fetch=false&key=ckey_e0658fffc54e4624b0d7842fed3 */
 
     const result = await axios.get(url);
-    console.log(result);
   }
   /* "NftMarketPlace": "0x412101A022814AB446Ac7A081227e06DfA18E0c2",
     "NFT": "0xD8FAe8DFd746d4BB7fa944E09F1DAed3a6A74057" */
@@ -36,7 +35,7 @@ const Transfers = ({
   useEffect(() => {
     if (transferHistory) {
       setTransferArray(transferHistory.data.data.items);
-      console.log("transfer Array updated to equal transferHistory");
+      /* console.log("transfer Array updated to equal transferHistory"); */
       getData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,7 +56,9 @@ const Transfers = ({
   async function getData() {
     let memoryArray = [];
     transferArray.map((e) => {
+      let result = showNftTransactionType(e);
       memoryArray.push({
+        Interaction: result,
         TransferType: e.transfers[0].transfer_type,
         From: e.from_address,
         To: e.to_address,
@@ -95,8 +96,6 @@ const Transfers = ({
     );
     setFinalObject(memoryArray);
     setFinishedFinalObject(true);
-
-    console.log(memoryArray);
   }
   /* function callTransferData() {
     console.log(transferData);
@@ -175,6 +174,7 @@ const Transfers = ({
                 >
                   <Box>
                     <Box style={{ float: "left", paddingRight: "40px" }}>
+                      <Box>From =&gt; {e.Interaction}</Box>
                       <Box>From =&gt; {e.From}</Box>
                       <Box>To =&gt; {e.To}</Box>
                       <Box>Gas spent =&gt; {e.GasSpent}</Box>
