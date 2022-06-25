@@ -21,8 +21,15 @@ A NFT Marketplace running currently on Kovan. Let's you mint, sell and buy NFT's
 This DApp allows you mint, buy and sell NFT's from the "Ape Family" contract.
 
 - NFT's uploaded to IPFS
+- Generated Transfer History with Covalent API, ethers receipt, tokenURI
+- sell, buy with NFT Marketplace contract
+- mint, transfer and set TokenURI with NFT contract
 
 ## Covalent API
+Covalent was used to generate: [this whole section](https://github.com/Stefan1612/Covalent-NFT-Marketplace/blob/master/src/Components/Transfers.js)
+
+The actual API call
+https://github.com/Stefan1612/Covalent-NFT-Marketplace/blob/5aa24e0f444a21256bf8e687a885b9cf8b9fb640/src/Components/Transfers.js#L30-L34
 
 ## Stack
 
