@@ -8,7 +8,7 @@ The NFT Marketplace is currently running and fully functional on Kovan at
 2. NFT:
    0x0594f7f0955685F879CAeaacAAA9662291eF2e29
 
-The Website is online and running at [Website]()
+The Website is online and running at [Website](https://superb-gnome-96c307.netlify.app/TransferHistory)
 
 ## Video Demo
 
@@ -30,6 +30,9 @@ Covalent was used to generate: [this whole section](https://github.com/Stefan161
 
 The actual API call
 https://github.com/Stefan1612/Covalent-NFT-Marketplace/blob/5aa24e0f444a21256bf8e687a885b9cf8b9fb640/src/Components/Transfers.js#L30-L34
+
+## License
+This project is realeased under the GPLv3 compatible license
 
 ## Stack
 
