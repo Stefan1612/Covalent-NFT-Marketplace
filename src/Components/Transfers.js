@@ -174,7 +174,9 @@ const Transfers = ({
                 >
                   <Box>
                     <Box style={{ float: "left", paddingRight: "40px" }}>
-                      <Box>From =&gt; {e.Interaction}</Box>
+                      <Box>
+                        <Typography variant={"h6"}> {e.Interaction}</Typography>
+                      </Box>
                       <Box>From =&gt; {e.From}</Box>
                       <Box>To =&gt; {e.To}</Box>
                       <Box>Gas spent =&gt; {e.GasSpent}</Box>
