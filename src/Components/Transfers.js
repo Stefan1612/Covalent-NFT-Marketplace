@@ -35,7 +35,10 @@ const Transfers = ({
 
   function showNftTransactionType(index) {
     if (index.transfers[0].transfer_type === "IN") {
-      return "Token Minted";
+      if (index.to_address === ContractAddress[42].NFT) {
+        return "Token Minted";
+      }
+      return "Token bought";
     }
     if (index.transfers[0].transfer_type === "OUT") {
       return "Token put up for sale";
