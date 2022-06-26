@@ -33,7 +33,7 @@ The actual API call
 https://github.com/Stefan1612/Covalent-NFT-Marketplace/blob/5aa24e0f444a21256bf8e687a885b9cf8b9fb640/src/Components/Transfers.js#L30-L34
 
 ## License
-This project is realeased under the GPLv3 compatible license
+This project is released under a GPLv3 compatible license
 
 ## Stack
 
