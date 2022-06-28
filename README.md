@@ -10,7 +10,11 @@ The NFT Marketplace is currently running and fully functional on Kovan at
 
 The Website is online and running at [Website](https://superb-gnome-96c307.netlify.app)
 
-# Presentation:
+## Approach
+
+A NFT Marketplace running currently on Kovan. Let's you mint, sell and buy NFT's. During the minting we store the Metadata on IPFS and only store the TokenURI on-chain.
+
+## Presentation:
 
 ## What is a NFT Marketplace?
 
@@ -24,9 +28,7 @@ This DApp allows you mint, buy and sell NFT's from the "Ape Family" contract.
 ## Video Demo
 https://www.youtube.com/watch?v=E7kEiSiET5o
 
-## Approach
 
-A NFT Marketplace running currently on Kovan. Let's you mint, sell and buy NFT's. During the minting we store the Metadata on IPFS and only store the TokenURI on-chain.
 
 
 ## Covalent API
